@@ -1,13 +1,28 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using LandingPageKHDN.Models;
+using LandingPageKHDN.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var firebaseConfig = builder.Configuration.GetSection("Firebase");
+string credentialPath = Path.Combine(Directory.GetCurrentDirectory(), firebaseConfig["CredentialPath"]);
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(credentialPath)
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 //Dbcontext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddTransient<LandingPageKHDN.Services.EmailService>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<RecaptchaService>();
+builder.Services.AddSingleton<FirebaseStorageService>();
 
 var app = builder.Build();
 
