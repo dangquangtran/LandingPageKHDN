@@ -7,7 +7,7 @@ public partial class ActionLog
 {
     public int Id { get; set; }
 
-    public int AdminId { get; set; }
+    public int? AdminId { get; set; }
 
     public string Action { get; set; } = null!;
 
