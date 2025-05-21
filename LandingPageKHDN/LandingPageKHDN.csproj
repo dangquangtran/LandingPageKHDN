@@ -20,13 +20,4 @@
     <Folder Include="Views\Admin\" />
   </ItemGroup>
 
-<<<<<<< HEAD
-=======
-  <ItemGroup>
-    <ProjectReference Include="..\LandingPageKHDN.Application\LandingPageKHDN.Application.csproj" />
-    <ProjectReference Include="..\LandingPageKHDN.Domain\LandingPageKHDN.Domain.csproj" />
-    <ProjectReference Include="..\LandingPageKHDN.Infrastructure\LandingPageKHDN.Infrastructure.csproj" />
-  </ItemGroup>
-
->>>>>>> khaipq-3-layer
 </Project>
