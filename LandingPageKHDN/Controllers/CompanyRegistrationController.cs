@@ -53,26 +53,6 @@ namespace LandingPageKHDN.Controllers
             if (!IsValidFile(businessLicenseFile, allowedExts) || !IsValidFile(legalRepIDFile, allowedExts))
                 return BadRequest("Tệp không hợp lệ.");
 
-            //// 3. Tạo folder uploads nếu chưa có
-            //var uploadPath = Path.Combine(_env.WebRootPath, "uploads");
-            //Directory.CreateDirectory(uploadPath);
-
-            //// 4. Lưu file
-            //string licenseFileName = Guid.NewGuid() + Path.GetExtension(businessLicenseFile.FileName);
-            //string idFileName = Guid.NewGuid() + Path.GetExtension(legalRepIDFile.FileName);
-
-            //var licenseFullPath = Path.Combine(uploadPath, licenseFileName);
-            //var idFullPath = Path.Combine(uploadPath, idFileName);
-
-            //using (var stream = new FileStream(licenseFullPath, FileMode.Create))
-            //{
-            //    await businessLicenseFile.CopyToAsync(stream);
-            //}
-
-            //using (var stream = new FileStream(idFullPath, FileMode.Create))
-            //{
-            //    await legalRepIDFile.CopyToAsync(stream);
-            //}
             // 3. Upload file lên Firebase Storage
             string licenseFileName = Guid.NewGuid() + Path.GetExtension(businessLicenseFile.FileName);
             string idFileName = Guid.NewGuid() + Path.GetExtension(legalRepIDFile.FileName);
@@ -90,8 +70,6 @@ namespace LandingPageKHDN.Controllers
             }
 
             // 4. Lưu DB
-            //model.BusinessLicenseFilePath = "/uploads/" + licenseFileName;
-            //model.LegalRepIdfilePath = "/uploads/" + idFileName;
             model.BusinessLicenseFilePath = licenseUrl;
             model.LegalRepIdfilePath = idUrl;
             model.CreatedAt = DateTime.Now;
