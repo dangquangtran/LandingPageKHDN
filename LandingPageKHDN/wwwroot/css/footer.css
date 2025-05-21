@@ -43,3 +43,14 @@
     transition: 0.3s all ease-in-out;
     text-decoration: none
 }
+
+.copy-right {
+    border-top: 1px solid #e6e5e5;
+    font-size: 0.8571428571rem;
+    padding: 1rem 0;
+    color: #666666;
+}
+
+.copy-right a {
+    text-decoration: none;
+}

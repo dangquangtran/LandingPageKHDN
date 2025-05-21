@@ -1,13 +1,20 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    function onScroll() {
-        var el = document.querySelector('.overview');
-        if (!el) return;
-        var rect = el.getBoundingClientRect();
+    function revealOnScroll(selector) {
+        var els = document.querySelectorAll(selector);
         var windowHeight = (window.innerHeight || document.documentElement.clientHeight);
-        if (rect.top <= windowHeight - 100) {
-            el.classList.add('show');
-            window.removeEventListener('scroll', onScroll);
-        }
+        els.forEach(function (el) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top <= windowHeight - 100) {
+                el.classList.add('show');
+            }
+        });
     }
-window.addEventListener('scroll', onScroll);
+
+    function onScroll() {
+        revealOnScroll('.overview');
+        revealOnScroll('.scroll-animate');
+    }
+
+    window.addEventListener('scroll', onScroll);
+    onScroll();
 });
