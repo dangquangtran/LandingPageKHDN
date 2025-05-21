@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LandingPageKHDN.Models;
+namespace LandingPageKHDN.Domain.Entities;
 
 public partial class ActionLog
 {
