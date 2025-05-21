@@ -1,0 +1,63 @@
+﻿using LandingPageKHDN.Domain.Entities;
+using LandingPageKHDN.Application.Interfaces.Repositories;
+using LandingPageKHDN.Application.Interfaces;
+using LandingPageKHDN.Infrastructure.DbContextFolder;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
+
+namespace LandingPageKHDN.Infrastructure
+{
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly AppDbContext _context;
+        private IDbContextTransaction _transaction;
+        public IRepository<AdminAccount> AdminAccounts { get; }
+        public IRepository<CompanyRegistration> CompanyRegistrations { get; }
+        public IRepository<ActionLog> ActionLogs { get; }
+
+        public UnitOfWork(AppDbContext context)
+        {
+            _context = context;
+            AdminAccounts = new Repositories.GenericRepository<AdminAccount>(_context);
+            CompanyRegistrations = new Repositories.GenericRepository<CompanyRegistration>(_context);
+            ActionLogs = new Repositories.GenericRepository<ActionLog>(_context);
+        }
+
+        public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
+        public async Task BeginTransactionAsync()
+        {
+            if (_transaction == null)
+                _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public void Dispose()
+        {
+            _transaction?.Dispose();
+            _context.Dispose();
+        }
+    }
+}

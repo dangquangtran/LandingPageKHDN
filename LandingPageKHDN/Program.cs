@@ -1,8 +1,8 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using LandingPageKHDN.Models;
 using LandingPageKHDN.Services;
 using Microsoft.EntityFrameworkCore;
+using LandingPageKHDN.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +17,16 @@ FirebaseApp.Create(new AppOptions()
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 //Dbcontext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddTransient<LandingPageKHDN.Services.EmailService>();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<RecaptchaService>();
-builder.Services.AddSingleton<FirebaseStorageService>();
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// G?i extension method ?? ??ng ký DI
+builder.Services.AddInfrastructure(builder.Configuration);
+
+//builder.Services.AddTransient<LandingPageKHDN.Services.EmailService>();
+//builder.Services.AddHttpClient();
+//builder.Services.AddScoped<RecaptchaService>();
+//builder.Services.AddSingleton<FirebaseStorageService>();
 
 var app = builder.Build();
 
