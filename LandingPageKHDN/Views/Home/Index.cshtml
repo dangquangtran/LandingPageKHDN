@@ -42,7 +42,7 @@
             </div>
 		</section>
         <div class="form-register my-5 row container-fluid d-flex justify-content-center align-items-center" style="background: #f5f5f5;" id="tab_3">
-            <div class="col-md-6 my-5 left-animate">
+            <div class="col-md-7 my-5 left-animate">
                 <h2 class="text-center mb-4">
                     <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
                 </h2>
@@ -101,6 +101,9 @@
                             <input type="file" class="form-control" id="legalRepIDFile" name="legalRepIDFile" accept=".pdf,.jpg,.jpeg,.png" required>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <div class="g-recaptcha" data-sitekey="@ViewBag.RecaptchaSiteKey"></div>
+                    </div>
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-5 btnRegister">Đăng ký</button>
@@ -109,7 +112,7 @@
 
             </div>
             
-            <div class="col-md-6 d-flex justify-content-center align-items-center right-animate">
+            <div class="col-md-5 d-flex justify-content-center align-items-center right-animate">
                 <img alt=""
                 src="~/images/kich-hoat-the-phong-cach-so-kienlongbank.jpg"
                 style="width: 100%">
@@ -121,3 +124,4 @@
 </div>
 
 <script src="~/js/index.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
