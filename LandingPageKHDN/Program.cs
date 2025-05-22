@@ -35,17 +35,11 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
 });
-//Dbcontext
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // G?i extension method ?? ??ng k?DI
 builder.Services.AddInfrastructure(builder.Configuration);
 
-//builder.Services.AddTransient<LandingPageKHDN.Services.EmailService>();
-//builder.Services.AddHttpClient();
-//builder.Services.AddScoped<RecaptchaService>();
-//builder.Services.AddSingleton<FirebaseStorageService>();
 
 var app = builder.Build();
 

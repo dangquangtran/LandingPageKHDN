@@ -4,6 +4,7 @@ using LandingPageKHDN.Domain.Entities;
 using LandingPageKHDN.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +119,7 @@ namespace LandingPageKHDN.Infrastructure.Services
         //    }
         //}
 
-        public async Task<ResponseModel<string>> RegisterCompanyAsync(CompanyRegistrationViewModel viewModel)
+        public async Task<ResponseModel<object>> RegisterCompanyAsync(CompanyRegistrationViewModel viewModel)
         {
             try
             {
@@ -128,7 +129,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                 if (recaptchaResult.Status != 200 || recaptchaResult.Data == false)
                 {
                     _logger.LogWarning("reCAPTCHA không hợp lệ cho công ty: {CompanyName}", viewModel.CompanyName);
-                    return ResponseModel<string>.FailureResult("Xác thực reCAPTCHA không thành công.");
+                    return ResponseModel<object>.FailureResult("Xác thực reCAPTCHA không thành công.");
                 }
                 _logger.LogInformation("reCAPTCHA hợp lệ");
 
@@ -137,7 +138,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                 if (!IsValidFile(viewModel.BusinessLicenseFile, allowedExts) || !IsValidFile(viewModel.LegalRepIDFile, allowedExts))
                 {
                     _logger.LogWarning("Tệp không hợp lệ cho công ty: {CompanyName}", viewModel.CompanyName);
-                    return ResponseModel<string>.FailureResult("Tệp không hợp lệ.");
+                    return ResponseModel<object>.FailureResult("Tệp không hợp lệ.");
                 }
                 _logger.LogInformation("Tệp hợp lệ, tiến hành upload");
 
@@ -153,7 +154,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                         licenseStream, licenseFileName, viewModel.BusinessLicenseFile.ContentType);
 
                     if (uploadResult.Status != 200)
-                        return ResponseModel<string>.FailureResult("Tải lên giấy phép kinh doanh thất bại.");
+                        return ResponseModel<object>.FailureResult("Tải lên giấy phép kinh doanh thất bại.");
 
                     licenseUrl = uploadResult.Data;
                 }
@@ -164,7 +165,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                         idStream, idFileName, viewModel.LegalRepIDFile.ContentType);
 
                     if (uploadResult.Status != 200)
-                        return ResponseModel<string>.FailureResult("Tải lên CMND/CCCD người đại diện thất bại.");
+                        return ResponseModel<object>.FailureResult("Tải lên CMND/CCCD người đại diện thất bại.");
 
                     idUrl = uploadResult.Data;
                 }
@@ -187,6 +188,20 @@ namespace LandingPageKHDN.Infrastructure.Services
                     CreatedAt = DateTime.Now
                 };
 
+                var duplicatedFields = await GetDuplicateFieldsAsync(entity);
+                if (duplicatedFields.Any())
+                {
+                    var message = "Thông tin đã tồn tại trong hệ thống";
+                    var errors = new Dictionary<string, string[]>
+    {
+        { "Duplicates", duplicatedFields.ToArray() }
+    };
+
+                    _logger.LogWarning("Thông tin bị trùng: {Fields}", string.Join(", ", duplicatedFields));
+                    return ResponseModel<object>.FailureResult(message, errors);
+                }
+
+
                 await _unitOfWork.CompanyRegistrations.AddAsync(entity);
                 _logger.LogInformation("Lưu thông tin đăng ký công ty vào DB: {CompanyName}", entity.CompanyName);
                 // 5. Ghi log
@@ -205,13 +220,13 @@ namespace LandingPageKHDN.Infrastructure.Services
                 // 6. Gửi email
                 await _emailService.SendEmailAsync(entity.Email, entity.CompanyName);
                 _logger.LogInformation("Đã gửi email xác nhận đến: {Email}", entity.Email);
-                return ResponseModel<string>.SuccessResult(entity.Id.ToString(), "Đăng ký thành công");
+                return ResponseModel<object>.SuccessResult(entity, "Đăng ký thành công");
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(ex, "Lỗi khi xử lý đăng ký khách hàng");
-                return ResponseModel<string>.FailureResult("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+                return ResponseModel<object>.FailureResult($"Lỗi: {ex.Message}");
             }
         }
 
@@ -221,5 +236,36 @@ namespace LandingPageKHDN.Infrastructure.Services
             var ext = Path.GetExtension(file.FileName).ToLower();
             return allowedExts.Contains(ext);
         }
+
+        private async Task<List<string>> GetDuplicateFieldsAsync(CompanyRegistration entity)
+        {
+            var existingRecords = await _unitOfWork.CompanyRegistrations
+                .FindAsync(x =>
+                    x.CompanyName == entity.CompanyName ||
+                    x.TaxCode == entity.TaxCode ||
+                    x.PhoneNumber == entity.PhoneNumber ||
+                    x.Email == entity.Email ||
+                    x.LegalRepId == entity.LegalRepId);
+
+            var duplicatedFields = new List<string>();
+
+            if (existingRecords.Any(x => x.CompanyName == entity.CompanyName))
+                duplicatedFields.Add($"Tên doanh nghiệp: {entity.CompanyName}");
+
+            if (existingRecords.Any(x => x.TaxCode == entity.TaxCode))
+                duplicatedFields.Add($"Mã số thuế: {entity.TaxCode}");
+
+            if (existingRecords.Any(x => x.PhoneNumber == entity.PhoneNumber))
+                duplicatedFields.Add($"SĐT: {entity.PhoneNumber}");
+
+            if (existingRecords.Any(x => x.Email == entity.Email))
+                duplicatedFields.Add($"Email: {entity.Email}");
+
+            if (existingRecords.Any(x => x.LegalRepId == entity.LegalRepId))
+                duplicatedFields.Add($"CCCD: {entity.LegalRepId}");
+
+            return duplicatedFields.Distinct().ToList();
+        }
+
     }
 }

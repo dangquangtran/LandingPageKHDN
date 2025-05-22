@@ -35,13 +35,13 @@ namespace LandingPageKHDN.Infrastructure.Services
 
             if (recaptchaResponse is { Success: true })
             {
-               return ResponseModel<bool>.SuccessResult(true, "Xác thực thành công", 200);
+                return ResponseModel<bool>.SuccessResult(true, "Xác thực thành công", 200);
             }
 
             return ResponseModel<bool>.FailureResult("Xác thực reCAPTCHA thất bại.");
 
             //await Task.CompletedTask;
-            //return ResponseModel<bool>.SuccessResult(true,"success");
+            //return ResponseModel<bool>.SuccessResult(true, "success");
         }
 
         private class RecaptchaResponse

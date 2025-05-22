@@ -13,6 +13,6 @@ namespace LandingPageKHDN.Application.Services
     public interface ICompanyRegistrationService
     {
        // Task<ResponseModel<string>> RegisterCompanyAsync(CompanyRegistration model, IFormFile businessLicenseFile, IFormFile legalRepIDFile, string recaptchaToken);
-        Task<ResponseModel<string>> RegisterCompanyAsync(CompanyRegistrationViewModel viewModel);
+        Task<ResponseModel<object>> RegisterCompanyAsync(CompanyRegistrationViewModel viewModel);
     }
 }
