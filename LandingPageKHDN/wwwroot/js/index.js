@@ -13,6 +13,7 @@
     function onScroll() {
         revealOnScroll('.overview');
         revealOnScroll('.scroll-animate');
+        revealOnScroll('.form-register');
     }
 
     window.addEventListener('scroll', onScroll);
