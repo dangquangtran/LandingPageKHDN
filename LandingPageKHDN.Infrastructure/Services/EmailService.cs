@@ -51,7 +51,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                 };
 
                 await smtpClient.SendMailAsync(message);
-                return ResponseModel<bool>.SuccessResult(true);
+                return ResponseModel<bool>.SuccessResult(default, "Send thành công");
             }
             catch (Exception ex)
             {

@@ -41,7 +41,7 @@ namespace LandingPageKHDN.Infrastructure.Services
             //return ResponseModel<bool>.FailureResult("Xác thực reCAPTCHA thất bại.");
 
             await Task.CompletedTask;
-            return ResponseModel<bool>.SuccessResult(true);
+            return ResponseModel<bool>.SuccessResult(true,"success");
         }
 
         private class RecaptchaResponse

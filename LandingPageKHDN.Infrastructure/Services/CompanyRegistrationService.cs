@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LandingPageKHDN.Application.ViewModels;
 
 namespace LandingPageKHDN.Infrastructure.Services
 {
@@ -34,80 +35,177 @@ namespace LandingPageKHDN.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<ResponseModel<string>> RegisterCompanyAsync(
-            CompanyRegistration model,
-            IFormFile businessLicenseFile,
-            IFormFile legalRepIDFile,
-            string recaptchaToken)
+        //public async Task<ResponseModel<string>> RegisterCompanyAsync(
+        //    CompanyRegistration model,
+        //    IFormFile businessLicenseFile,
+        //    IFormFile legalRepIDFile,
+        //    string recaptchaToken)
+        //{
+        //    try
+        //    {
+        //        // 1. Xác thực reCAPTCHA
+        //        var recaptchaResult = await _recaptchaService.IsValidAsync(recaptchaToken);
+        //        if (recaptchaResult.Status !=200 || recaptchaResult.Data == false)
+        //        {
+        //            return ResponseModel<string>.FailureResult("Xác thực reCAPTCHA không thành công.");
+        //        }
+
+        //        // 2. Kiểm tra file hợp lệ
+        //        string[] allowedExts = [".pdf", ".jpg", ".jpeg", ".png"];
+        //        if (!IsValidFile(businessLicenseFile, allowedExts) || !IsValidFile(legalRepIDFile, allowedExts))
+        //        {
+        //            return ResponseModel<string>.FailureResult("Tệp không hợp lệ.");
+        //        }
+
+        //        // 3. Upload lên Firebase Storage
+        //        string licenseFileName = Guid.NewGuid() + Path.GetExtension(businessLicenseFile.FileName);
+        //        string idFileName = Guid.NewGuid() + Path.GetExtension(legalRepIDFile.FileName);
+
+        //        string licenseUrl, idUrl;
+
+        //        using (var licenseStream = businessLicenseFile.OpenReadStream())
+        //        {
+        //            var uploadResult = await _firebaseStorageService.UploadFileAsync(
+        //                licenseStream, licenseFileName, businessLicenseFile.ContentType);
+
+        //            if (uploadResult.Status != 200)
+        //                return ResponseModel<string>.FailureResult("Tải lên giấy phép kinh doanh thất bại.");
+
+        //            licenseUrl = uploadResult.Data;
+        //        }
+
+        //        using (var idStream = legalRepIDFile.OpenReadStream())
+        //        {
+        //            var uploadResult = await _firebaseStorageService.UploadFileAsync(
+        //                idStream, idFileName, legalRepIDFile.ContentType);
+
+        //            if (uploadResult.Status != 200)
+        //                return ResponseModel<string>.FailureResult("Tải lên CMND/CCCD người đại diện thất bại.");
+
+        //            idUrl = uploadResult.Data;
+        //        }
+
+        //        await _unitOfWork.BeginTransactionAsync();
+
+        //        // 4. Lưu thông tin đăng ký
+        //        model.BusinessLicenseFilePath = licenseUrl;
+        //        model.LegalRepIdfilePath = idUrl;
+        //        model.CreatedAt = DateTime.Now;
+
+        //        await _unitOfWork.CompanyRegistrations.AddAsync(model);
+
+        //        // 5. Ghi log
+        //        var log = new ActionLog
+        //        {
+        //            AdminId = null,
+        //            Action = $"Khách hàng đăng ký: {model.CompanyName} - MST: {model.TaxCode}",
+        //            CreatedAt = DateTime.Now
+        //        };
+        //        await _unitOfWork.ActionLogs.AddAsync(log);
+
+        //        await _unitOfWork.SaveChangesAsync();
+        //        await _unitOfWork.CommitTransactionAsync();
+        //        // 6. Gửi email
+        //        await _emailService.SendEmailAsync(model.Email, model.CompanyName);
+
+        //        return ResponseModel<string>.SuccessResult( model.Id.ToString(),"Đăng ký thành công");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _unitOfWork.RollbackTransactionAsync();
+        //        _logger.LogError(ex, "Lỗi khi xử lý đăng ký khách hàng");
+        //        return ResponseModel<string>.FailureResult("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+        //    }
+        //}
+
+        public async Task<ResponseModel<string>> RegisterCompanyAsync(CompanyRegistrationViewModel viewModel)
         {
             try
             {
+                _logger.LogInformation("Bắt đầu xử lý đăng ký công ty cho {CompanyName}", viewModel.CompanyName);
                 // 1. Xác thực reCAPTCHA
-                var recaptchaResult = await _recaptchaService.IsValidAsync(recaptchaToken);
-                if (!recaptchaResult.Success || recaptchaResult.Data == false)
+                var recaptchaResult = await _recaptchaService.IsValidAsync(viewModel.RecaptchaToken);
+                if (recaptchaResult.Status != 200 || recaptchaResult.Data == false)
                 {
+                    _logger.LogWarning("reCAPTCHA không hợp lệ cho công ty: {CompanyName}", viewModel.CompanyName);
                     return ResponseModel<string>.FailureResult("Xác thực reCAPTCHA không thành công.");
                 }
+                _logger.LogInformation("reCAPTCHA hợp lệ");
 
                 // 2. Kiểm tra file hợp lệ
                 string[] allowedExts = [".pdf", ".jpg", ".jpeg", ".png"];
-                if (!IsValidFile(businessLicenseFile, allowedExts) || !IsValidFile(legalRepIDFile, allowedExts))
+                if (!IsValidFile(viewModel.BusinessLicenseFile, allowedExts) || !IsValidFile(viewModel.LegalRepIDFile, allowedExts))
                 {
+                    _logger.LogWarning("Tệp không hợp lệ cho công ty: {CompanyName}", viewModel.CompanyName);
                     return ResponseModel<string>.FailureResult("Tệp không hợp lệ.");
                 }
+                _logger.LogInformation("Tệp hợp lệ, tiến hành upload");
 
-                // 3. Upload lên Firebase Storage
-                string licenseFileName = Guid.NewGuid() + Path.GetExtension(businessLicenseFile.FileName);
-                string idFileName = Guid.NewGuid() + Path.GetExtension(legalRepIDFile.FileName);
+                // 3. Upload lên Firebase
+                string licenseFileName = Guid.NewGuid() + Path.GetExtension(viewModel.BusinessLicenseFile!.FileName);
+                string idFileName = Guid.NewGuid() + Path.GetExtension(viewModel.LegalRepIDFile!.FileName);
 
                 string licenseUrl, idUrl;
 
-                using (var licenseStream = businessLicenseFile.OpenReadStream())
+                using (var licenseStream = viewModel.BusinessLicenseFile.OpenReadStream())
                 {
                     var uploadResult = await _firebaseStorageService.UploadFileAsync(
-                        licenseStream, licenseFileName, businessLicenseFile.ContentType);
+                        licenseStream, licenseFileName, viewModel.BusinessLicenseFile.ContentType);
 
-                    if (!uploadResult.Success)
+                    if (uploadResult.Status != 200)
                         return ResponseModel<string>.FailureResult("Tải lên giấy phép kinh doanh thất bại.");
 
                     licenseUrl = uploadResult.Data;
                 }
 
-                using (var idStream = legalRepIDFile.OpenReadStream())
+                using (var idStream = viewModel.LegalRepIDFile.OpenReadStream())
                 {
                     var uploadResult = await _firebaseStorageService.UploadFileAsync(
-                        idStream, idFileName, legalRepIDFile.ContentType);
+                        idStream, idFileName, viewModel.LegalRepIDFile.ContentType);
 
-                    if (!uploadResult.Success)
+                    if (uploadResult.Status != 200)
                         return ResponseModel<string>.FailureResult("Tải lên CMND/CCCD người đại diện thất bại.");
 
                     idUrl = uploadResult.Data;
                 }
 
                 await _unitOfWork.BeginTransactionAsync();
+                _logger.LogInformation("Upload file thành công");
+                // 4. Mapping từ ViewModel sang Entity
+                var entity = new CompanyRegistration
+                {
+                    CompanyName = viewModel.CompanyName,
+                    TaxCode = viewModel.TaxCode,
+                    Address = viewModel.Address,
+                    PhoneNumber = viewModel.PhoneNumber,
+                    Email = viewModel.Email,
+                    LegalRepName = viewModel.LegalRepName,
+                    LegalRepId = viewModel.LegalRepId,
+                    LegalRepPosition = viewModel.LegalRepPosition,
+                    BusinessLicenseFilePath = licenseUrl,
+                    LegalRepIdfilePath = idUrl,
+                    CreatedAt = DateTime.Now
+                };
 
-                // 4. Lưu thông tin đăng ký
-                model.BusinessLicenseFilePath = licenseUrl;
-                model.LegalRepIdfilePath = idUrl;
-                model.CreatedAt = DateTime.Now;
-
-                await _unitOfWork.CompanyRegistrations.AddAsync(model);
-
+                await _unitOfWork.CompanyRegistrations.AddAsync(entity);
+                _logger.LogInformation("Lưu thông tin đăng ký công ty vào DB: {CompanyName}", entity.CompanyName);
                 // 5. Ghi log
                 var log = new ActionLog
                 {
                     AdminId = null,
-                    Action = $"Khách hàng đăng ký: {model.CompanyName} - MST: {model.TaxCode}",
+                    Action = $"Khách hàng đăng ký: {entity.CompanyName} - MST: {entity.TaxCode}",
                     CreatedAt = DateTime.Now
                 };
                 await _unitOfWork.ActionLogs.AddAsync(log);
 
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
-                // 6. Gửi email
-                await _emailService.SendEmailAsync(model.Email, model.CompanyName);
+                _logger.LogInformation("Ghi log hành động vào DB");
 
-                return ResponseModel<string>.SuccessResult("Đăng ký thành công");
+                // 6. Gửi email
+                await _emailService.SendEmailAsync(entity.Email, entity.CompanyName);
+                _logger.LogInformation("Đã gửi email xác nhận đến: {Email}", entity.Email);
+                return ResponseModel<string>.SuccessResult(entity.Id.ToString(), "Đăng ký thành công");
             }
             catch (Exception ex)
             {
