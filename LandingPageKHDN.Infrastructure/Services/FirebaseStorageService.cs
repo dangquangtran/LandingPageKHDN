@@ -70,7 +70,7 @@ namespace LandingPageKHDN.Infrastructure.Services
                 string urlEncodedFileName = Uri.EscapeDataString(fileName);
                 string downloadUrl = $"https://firebasestorage.googleapis.com/v0/b/{_bucket}/o/{urlEncodedFileName}?alt=media&token={token}";
 
-                return ResponseModel<string>.SuccessResult("Upload ảnh thành công",downloadUrl);
+                return ResponseModel<string>.SuccessResult(downloadUrl, "Upload ảnh thành công");
             }
             catch (Exception ex)
             {
