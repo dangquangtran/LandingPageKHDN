@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using LandingPageKHDN.Application.Services;
+using LandingPageKHDN.Application.ViewModels;
+using LandingPageKHDN.Application.Common;
 
 namespace LandingPageKHDN.Controllers
 {
@@ -35,13 +37,23 @@ namespace LandingPageKHDN.Controllers
 
         [HttpPost]
         //    [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit( [FromForm] CompanyRegistration model,
-                                                 IFormFile businessLicenseFile,
-                                                 IFormFile legalRepIDFile,
-                                                 string recaptchaToken)
+        public async Task<IActionResult> Submit([FromForm]CompanyRegistrationViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(e => e.Value.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                var errorMessage = "Dữ liệu không hợp lệ.";
+
+                return BadRequest(ResponseModel<string>.FailureResult(errorMessage, errors));
+            }
             var result = await _companyRegistrationService.RegisterCompanyAsync(
-                model, businessLicenseFile, legalRepIDFile, recaptchaToken);
+                viewModel);
 
             //if (result.Success)
             //{
@@ -53,20 +65,16 @@ namespace LandingPageKHDN.Controllers
             //ModelState.AddModelError(string.Empty, result.Message);
             //return View("Index", model);
 
-            if (result.Success)
-            {
-                return Ok(new
-                {
-                    success = true,
-                    message = result.Message
-                });
-            }
+            return result.Status == 200
+             ? Ok(result)
+             : BadRequest(result);
+        }
 
-            return BadRequest(new
-            {
-                success = false,
-                message = result.Message
-            });
+
+        //Method test handler error
+        public IActionResult TestException()
+        {
+            throw new Exception("Lỗi test GlobalExceptionFilter.");
         }
     }
 }
