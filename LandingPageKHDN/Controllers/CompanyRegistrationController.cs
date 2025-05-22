@@ -18,9 +18,11 @@ namespace LandingPageKHDN.Controllers
         //private readonly FirebaseStorageService _firebaseStorageService;
         private readonly ICompanyRegistrationService _companyRegistrationService;
         private readonly ILogger<CompanyRegistrationController> _logger;
+        private readonly IConfiguration _configuration;
 
         public CompanyRegistrationController(ILogger<CompanyRegistrationController> logger,
-                                             ICompanyRegistrationService companyRegistrationService)
+                                             ICompanyRegistrationService companyRegistrationService,
+                                             IConfiguration configuration)
         {
             //_context = context;
             _logger = logger;
@@ -29,6 +31,7 @@ namespace LandingPageKHDN.Controllers
             //_recaptchaService = recaptchaService;
             //_firebaseStorageService = firebaseStorageService;
             _companyRegistrationService = companyRegistrationService;
+            _configuration = configuration;
         }
         public IActionResult Index()
         {
@@ -39,21 +42,22 @@ namespace LandingPageKHDN.Controllers
         //    [ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit([FromForm]CompanyRegistrationViewModel viewModel)
         {
+            ViewBag.RecaptchaSiteKey = _configuration["Recaptcha:SiteKey"];
             if (!ModelState.IsValid)
             {
-                var errors = ModelState
-                    .Where(e => e.Value.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                    );
+                //var errors = ModelState
+                //    .Where(e => e.Value.Errors.Count > 0)
+                //    .ToDictionary(
+                //        kvp => kvp.Key,
+                //        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                //    );
 
-                var errorMessage = "Dữ liệu không hợp lệ.";
+                //var errorMessage = "Dữ liệu không hợp lệ.";
 
-                return BadRequest(ResponseModel<string>.FailureResult(errorMessage, errors));
+                //return BadRequest(ResponseModel<string>.FailureResult(errorMessage, errors));
+                return View("~/Views/Home/Index.cshtml", viewModel);
             }
-            var result = await _companyRegistrationService.RegisterCompanyAsync(
-                viewModel);
+            var result = await _companyRegistrationService.RegisterCompanyAsync(viewModel);
 
             //if (result.Success)
             //{
@@ -62,12 +66,9 @@ namespace LandingPageKHDN.Controllers
             //}
 
             //// Truyền lỗi về lại view để hiển thị
-            //ModelState.AddModelError(string.Empty, result.Message);
-            //return View("Index", model);
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View("~/Views/Home/Index.cshtml", viewModel);
 
-            return result.Status == 200
-             ? Ok(result)
-             : BadRequest(result);
         }
 
 
