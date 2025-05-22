@@ -188,6 +188,20 @@ namespace LandingPageKHDN.Infrastructure.Services
                     CreatedAt = DateTime.Now
                 };
 
+                var duplicatedFields = await GetDuplicateFieldsAsync(entity);
+                if (duplicatedFields.Any())
+                {
+                    var message = "Thông tin đã tồn tại trong hệ thống";
+                    var errors = new Dictionary<string, string[]>
+    {
+        { "Duplicates", duplicatedFields.ToArray() }
+    };
+
+                    _logger.LogWarning("Thông tin bị trùng: {Fields}", string.Join(", ", duplicatedFields));
+                    return ResponseModel<object>.FailureResult(message, errors);
+                }
+
+
                 await _unitOfWork.CompanyRegistrations.AddAsync(entity);
                 _logger.LogInformation("Lưu thông tin đăng ký công ty vào DB: {CompanyName}", entity.CompanyName);
                 // 5. Ghi log
@@ -222,5 +236,36 @@ namespace LandingPageKHDN.Infrastructure.Services
             var ext = Path.GetExtension(file.FileName).ToLower();
             return allowedExts.Contains(ext);
         }
+
+        private async Task<List<string>> GetDuplicateFieldsAsync(CompanyRegistration entity)
+        {
+            var existingRecords = await _unitOfWork.CompanyRegistrations
+                .FindAsync(x =>
+                    x.CompanyName == entity.CompanyName ||
+                    x.TaxCode == entity.TaxCode ||
+                    x.PhoneNumber == entity.PhoneNumber ||
+                    x.Email == entity.Email ||
+                    x.LegalRepId == entity.LegalRepId);
+
+            var duplicatedFields = new List<string>();
+
+            if (existingRecords.Any(x => x.CompanyName == entity.CompanyName))
+                duplicatedFields.Add($"Tên doanh nghiệp: {entity.CompanyName}");
+
+            if (existingRecords.Any(x => x.TaxCode == entity.TaxCode))
+                duplicatedFields.Add($"Mã số thuế: {entity.TaxCode}");
+
+            if (existingRecords.Any(x => x.PhoneNumber == entity.PhoneNumber))
+                duplicatedFields.Add($"SĐT: {entity.PhoneNumber}");
+
+            if (existingRecords.Any(x => x.Email == entity.Email))
+                duplicatedFields.Add($"Email: {entity.Email}");
+
+            if (existingRecords.Any(x => x.LegalRepId == entity.LegalRepId))
+                duplicatedFields.Add($"CCCD: {entity.LegalRepId}");
+
+            return duplicatedFields.Distinct().ToList();
+        }
+
     }
 }
