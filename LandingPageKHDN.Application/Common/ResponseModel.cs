@@ -15,6 +15,7 @@ namespace LandingPageKHDN.Application.Common
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public T? Data { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, string[]>? Errors { get; set; }
         public static ResponseModel<T> SuccessResult(T data, string message, int status =200)
         {
