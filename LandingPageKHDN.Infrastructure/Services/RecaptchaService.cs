@@ -26,22 +26,22 @@ namespace LandingPageKHDN.Infrastructure.Services
 
         public async Task<ResponseModel<bool>> IsValidAsync(string token)
         {
-            //var secretKey = _configuration["Recaptcha:SecretKey"];
-            //var url = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={token}";
+            var secretKey = _configuration["Recaptcha:SecretKey"];
+            var url = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={token}";
 
-            //var response = await _httpClient.GetAsync(url);
-            //var content = await response.Content.ReadAsStringAsync();
-            //var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaResponse>(content);
+            var response = await _httpClient.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+            var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaResponse>(content);
 
-            //if (recaptchaResponse is { Success: true })
-            //{
-            //    return ResponseModel<bool>.SuccessResult(true);
-            //}
+            if (recaptchaResponse is { Success: true })
+            {
+               return ResponseModel<bool>.SuccessResult(true, "Xác thực thành công", 200);
+            }
 
-            //return ResponseModel<bool>.FailureResult("Xác thực reCAPTCHA thất bại.");
+            return ResponseModel<bool>.FailureResult("Xác thực reCAPTCHA thất bại.");
 
-            await Task.CompletedTask;
-            return ResponseModel<bool>.SuccessResult(true,"success");
+            //await Task.CompletedTask;
+            //return ResponseModel<bool>.SuccessResult(true,"success");
         }
 
         private class RecaptchaResponse
