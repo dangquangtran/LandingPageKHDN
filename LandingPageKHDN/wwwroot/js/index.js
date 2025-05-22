@@ -17,7 +17,6 @@
     }
 
     window.addEventListener('scroll', onScroll);
-    onScroll();
 });
 
 document.querySelector('form').addEventListener('submit', function (e) {

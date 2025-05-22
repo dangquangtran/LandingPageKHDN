@@ -54,27 +54,23 @@ form textarea:focus {
     transform: translateX(0) scale(1);
 }
 
-.form-register {
-    opacity: 1;
-}
-
-.form-register .col-md-6 {
+.form-register .left-animate,
+.form-register .right-animate {
     opacity: 0;
     transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
     will-change: opacity, transform;
 }
 
-.form-register .col-md-6.left-animate {
+.form-register .left-animate {
     transform: translateX(-80px);
 }
 
-.form-register .col-md-6.right-animate {
+.form-register .right-animate {
     transform: translateX(80px);
 }
 
-.form-register.show .col-md-6 {
+.form-register.show .left-animate,
+.form-register.show .right-animate {
     opacity: 1;
     transform: translateX(0);
 }
-
-
