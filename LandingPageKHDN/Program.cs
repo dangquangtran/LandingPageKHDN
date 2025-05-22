@@ -3,8 +3,17 @@ using Google.Apis.Auth.OAuth2;
 //using LandingPageKHDN.Services;
 using Microsoft.EntityFrameworkCore;
 using LandingPageKHDN.Infrastructure;
+using System.Text.Json;
+using LandingPageKHDN.Filters;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console() 
+    .WriteTo.File("Logs/app_log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var firebaseConfig = builder.Configuration.GetSection("Firebase");
 string credentialPath = Path.Combine(Directory.GetCurrentDirectory(), firebaseConfig["CredentialPath"]);
@@ -16,6 +25,16 @@ FirebaseApp.Create(new AppOptions()
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Host.UseSerilog();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 //Dbcontext
 //builder.Services.AddDbContext<AppDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
