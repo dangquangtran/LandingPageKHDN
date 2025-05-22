@@ -41,72 +41,79 @@
                 </div>
             </div>
 		</section>
-        <div class="my-5">
-            <h2 class="text-center mb-4">
-                <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
-            </h2>
-            <form enctype="multipart/form-data">
-                <!-- Thông tin cơ bản -->
-                <h2><strong>Thông tin cơ bản</strong></h2>
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-2">
-                        <label for="companyName" class="form-label"><strong>Tên doanh nghiệp</strong></label>
-                        <input type="text" class="form-control" id="companyName" name="companyName" required placeholder="VD: Công ty TNHH ABC">
+        <div class="my-5 row container-fluid d-flex justify-content-center align-items-center" style="background: #f5f5f5;">
+            <div class="col-md-6 my-5">
+                <h2 class="text-center mb-4">
+                    <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
+                </h2>
+                <form asp-controller="CompanyRegistration" asp-action="Submit" method="post" enctype="multipart/form-data">
+                    <!-- Thông tin cơ bản -->
+                    <h2><strong>Thông tin cơ bản</strong></h2>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <label for="companyName" class="form-label"><strong>Tên doanh nghiệp</strong></label>
+                            <input type="text" class="form-control" id="companyName" name="companyName" required placeholder="VD: Công ty TNHH ABC">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="taxCode" class="form-label"><strong>Mã số thuế</strong></label>
+                            <input type="text" class="form-control" id="taxCode" name="taxCode" required placeholder="VD: 1234567890">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="address" class="form-label"><strong>Địa chỉ</strong></label>
+                            <input type="text" class="form-control" id="address" name="address" required placeholder="VD: 123 Lê Lợi, Quận 1, TP.HCM">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="phoneNumber" class="form-label"><strong>Số điện thoại</strong></label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required placeholder="VD: 0909123456">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="email" class="form-label"><strong>Email</strong></label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="VD: email@congty.com">
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-2">
-                        <label for="taxCode" class="form-label"><strong>Mã số thuế</strong></label>
-                        <input type="text" class="form-control" id="taxCode" name="taxCode" required placeholder="VD: 1234567890">
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <label for="address" class="form-label"><strong>Địa chỉ</strong></label>
-                        <input type="text" class="form-control" id="address" name="address" required placeholder="VD: 123 Lê Lợi, Quận 1, TP.HCM">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <label for="phone" class="form-label"><strong>Số điện thoại</strong></label>
-                        <input type="tel" class="form-control" id="phone" name="phone" required placeholder="VD: 0909123456">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <label for="email" class="form-label"><strong>Email</strong></label>
-                        <input type="email" class="form-control" id="email" name="email" required placeholder="VD: email@congty.com">
-                    </div>
-                </div>
 
-                <!-- Người đại diện pháp luật -->
-                <h2><strong>Người đại diện pháp luật</strong></h2>
-                <div class="row mb-3">
-                    <div class="col-md-4 mb-2">
-                        <label for="repName" class="form-label"><strong>Họ tên</strong></label>
-                        <input type="text" class="form-control" id="repName" name="repName" required placeholder="VD: Nguyen Van A">
+                    <!-- Người đại diện pháp luật -->
+                    <h2><strong>Người đại diện pháp luật</strong></h2>
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-2">
+                            <label for="legalRepName" class="form-label"><strong>Họ tên</strong></label>
+                            <input type="text" class="form-control" id="legalRepName" name="legalRepName" required placeholder="VD: Nguyen Van A">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="legalRepId" class="form-label"><strong>CMND/CCCD</strong></label>
+                            <input type="text" class="form-control" id="legalRepId" name="legalRepId" required placeholder="VD: 012345678901">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="legalRepPosition" class="form-label"><strong>Chức vụ</strong></label>
+                            <input type="text" class="form-control" id="legalRepPosition" name="legalRepPosition" required placeholder="VD: Giám đốc">
+                        </div>
                     </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="repId" class="form-label"><strong>CMND/CCCD</strong></label>
-                        <input type="text" class="form-control" id="repId" name="repId" required placeholder="VD: 012345678901">
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="repPosition" class="form-label"><strong>Chức vụ</strong></label>
-                        <input type="text" class="form-control" id="repPosition" name="repPosition" required placeholder="VD: Giám đốc">
-                    </div>
-                </div>
 
-                <!-- Upload -->
-                <h2><strong>Upload tài liệu</strong></h2>
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-2">
-                        <label for="businessLicense" class="form-label"><strong>Giấy phép đăng ký kinh doanh (PDF, JPG, PNG)</strong></label>
-                        <input type="file" class="form-control" id="businessLicense" name="businessLicense" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <!-- Upload -->
+                    <h2><strong>Upload tài liệu</strong></h2>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <label for="businessLicense" class="form-label"><strong>Giấy phép đăng ký kinh doanh (PDF, JPG, PNG)</strong></label>
+                            <input type="file" class="form-control" id="businessLicenseFile" name="businessLicenseFile" accept=".pdf,.jpg,.jpeg,.png" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="repIdCard" class="form-label"><strong>CMND/CCCD người đại diện (PDF, JPG, PNG)</strong></label>
+                            <input type="file" class="form-control" id="legalRepIDFile" name="legalRepIDFile" accept=".pdf,.jpg,.jpeg,.png" required>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-2">
-                        <label for="repIdCard" class="form-label"><strong>CMND/CCCD người đại diện (PDF, JPG, PNG)</strong></label>
-                        <input type="file" class="form-control" id="repIdCard" name="repIdCard" accept=".pdf,.jpg,.jpeg,.png" required>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-5 btnRegister">Đăng ký</button>
                     </div>
-                </div>
+                </form>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary px-5 btnRegister">Đăng ký</button>
-                </div>
-            </form>
-
-
+            </div>
+            
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <img alt=""
+                src="~/images/kich-hoat-the-phong-cach-so-kienlongbank.jpg"
+                style="width: 100%">
+            </div>
         </div>
 
 

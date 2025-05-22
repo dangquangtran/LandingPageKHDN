@@ -1,6 +1,6 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using LandingPageKHDN.Services;
+//using LandingPageKHDN.Services;
 using Microsoft.EntityFrameworkCore;
 using LandingPageKHDN.Infrastructure;
 
@@ -20,7 +20,7 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<AppDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// G?i extension method ?? ??ng ký DI
+// G?i extension method ?? ??ng k?DI
 builder.Services.AddInfrastructure(builder.Configuration);
 
 //builder.Services.AddTransient<LandingPageKHDN.Services.EmailService>();
