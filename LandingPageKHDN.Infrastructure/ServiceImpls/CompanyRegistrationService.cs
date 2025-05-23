@@ -188,17 +188,11 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                     CreatedAt = DateTime.Now
                 };
 
-                var duplicatedFields = await GetDuplicateFieldsAsync(entity);
-                if (duplicatedFields.Any())
+                var duplicateFieldErrors = await GetDuplicateFieldErrorsAsync(entity);
+                if (duplicateFieldErrors.Any())
                 {
                     var message = "Thông tin đã tồn tại trong hệ thống";
-                    var errors = new Dictionary<string, string[]>
-    {
-        { "Duplicates", duplicatedFields.ToArray() }
-    };
-
-                    _logger.LogWarning("Thông tin bị trùng: {Fields}", string.Join(", ", duplicatedFields));
-                    return ResponseModel<object>.FailureResult(message, errors);
+                    return ResponseModel<object>.FailureResult(message, duplicateFieldErrors);
                 }
 
 
@@ -237,35 +231,36 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             return allowedExts.Contains(ext);
         }
 
-        private async Task<List<string>> GetDuplicateFieldsAsync(CompanyRegistration entity)
-        {
+        private async Task<Dictionary<string, string[]>> GetDuplicateFieldErrorsAsync(CompanyRegistration entity)
+{
             var existingRecords = await _unitOfWork.CompanyRegistrations
                 .FindAsync(x =>
-                    x.CompanyName == entity.CompanyName ||
-                    x.TaxCode == entity.TaxCode ||
-                    x.PhoneNumber == entity.PhoneNumber ||
-                    x.Email == entity.Email ||
-                    x.LegalRepId == entity.LegalRepId);
+                x.CompanyName == entity.CompanyName ||
+                x.TaxCode == entity.TaxCode ||
+                x.PhoneNumber == entity.PhoneNumber ||
+                x.Email == entity.Email ||
+                x.LegalRepId == entity.LegalRepId);
 
-            var duplicatedFields = new List<string>();
+            var errors = new Dictionary<string, string[]>();
 
             if (existingRecords.Any(x => x.CompanyName == entity.CompanyName))
-                duplicatedFields.Add($"Tên doanh nghiệp: {entity.CompanyName}");
+                errors["CompanyName"] = new[] { "Tên doanh nghiệp đã tồn tại." };
 
             if (existingRecords.Any(x => x.TaxCode == entity.TaxCode))
-                duplicatedFields.Add($"Mã số thuế: {entity.TaxCode}");
+                errors["TaxCode"] = new[] { "Mã số thuế đã tồn tại." };
 
             if (existingRecords.Any(x => x.PhoneNumber == entity.PhoneNumber))
-                duplicatedFields.Add($"SĐT: {entity.PhoneNumber}");
+                errors["PhoneNumber"] = new[] { "Số điện thoại đã tồn tại." };
 
             if (existingRecords.Any(x => x.Email == entity.Email))
-                duplicatedFields.Add($"Email: {entity.Email}");
+                errors["Email"] = new[] { "Email đã tồn tại." };
 
             if (existingRecords.Any(x => x.LegalRepId == entity.LegalRepId))
-                duplicatedFields.Add($"CCCD: {entity.LegalRepId}");
+                errors["LegalRepId"] = new[] { "CMND/CCCD đã tồn tại." };
 
-            return duplicatedFields.Distinct().ToList();
-        }
+            return errors;
+            }
+
 
     }
 }

@@ -66,9 +66,19 @@ namespace LandingPageKHDN.Controllers
             //}
 
             //// Truyền lỗi về lại view để hiển thị
-            ModelState.AddModelError(string.Empty, result.Message);
-            return View("~/Views/Home/Index.cshtml", viewModel);
-
+            if (result.Errors != null)
+            {
+                foreach (var error in result.Errors)
+                {
+                    foreach (var msg in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, msg);
+                    }
+                }
+                return View("~/Views/Home/Index.cshtml", viewModel);
+            }
+            TempData["SuccessMessage"] = result.Message ?? "Đăng ký thành công!";
+            return RedirectToAction("Index", "Home");
         }
 
 

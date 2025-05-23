@@ -48,7 +48,12 @@
                     <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
                 </h2>
                 <form asp-controller="CompanyRegistration" asp-action="Submit" method="post" enctype="multipart/form-data">
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success text-center" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
                     <!-- Thông tin cơ bản -->
                     <h2><strong>Thông tin cơ bản</strong></h2>
                     <div class="row mb-3">
