@@ -80,3 +80,7 @@ form textarea:focus {
     margin-top: 4px;
     display: block;
 }
+
+h4 {
+    color: #1d2452;
+}

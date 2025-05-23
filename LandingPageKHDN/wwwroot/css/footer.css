@@ -54,3 +54,38 @@
 .copy-right a {
     text-decoration: none;
 }
+
+
+@media (max-width: 767.98px) {
+    .logo-footer,
+    .content-footer,
+    .contact-footer {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        width: 100% !important;
+        margin-bottom: 16px;
+    }
+
+        .logo-footer a {
+            justify-content: center !important;
+        }
+
+        .content-footer .h1,
+        .content-footer .text,
+        .contact-footer {
+            text-align: center !important;
+        }
+
+    .copy-right .row > div {
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .bottom-menu {
+        margin-top: 10px !important;
+    }
+}

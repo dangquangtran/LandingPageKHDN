@@ -70,4 +70,44 @@
     align-items: end;
     text-align: end;
     justify-content: end;
-}}
+}
+
+@media (max-width: 767.98px) {
+    .header-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .logo, .phone {
+        /* Ẩn cột Bootstrap, dùng flex inline */
+        float: none !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .logo {
+        justify-content: flex-end;
+    }
+
+    .phone {
+        justify-content: flex-start;
+        margin-left: 12px;
+    }
+
+    .content {
+        display: none !important; /* Ẩn menu nav trên mobile */
+    }
+
+    .hotline-text {
+        display: none !important; /* Ẩn chữ Hotline và số điện thoại trên mobile */
+    }
+}
+
+

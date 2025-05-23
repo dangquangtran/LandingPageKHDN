@@ -3,13 +3,13 @@
     ViewData["Title"] = "Đăng ký mở tài khoản ngân hàng ";
 }
 <link rel="stylesheet" href="~/css/index.css" />
-<div class="container-fluid" style="padding:0px; font-size:24px">
+<div class="container-fluid" style="padding:0px; font-size:18px">
     <img alt="" src="~/images/kienlongbank-uu-dai-cho-doanh-nghiep-vay-von-1903x675.jpg" style="width: 100%">
     <div>
         <div class="overview m-5" id="tab_1">
-            <h1 class="justify-content-center d-flex">
-			    <span style="font-size: 30px; padding-bottom: 20px"><strong>TỔNG QUAN KIENLONGBANK</strong></span>
-		    </h1>
+            <h2 class="justify-content-center d-flex">
+			    <span style="padding-bottom: 20px"><strong>TỔNG QUAN KIENLONGBANK</strong></span>
+		    </h2>
 		    <div class="row">
 			    <div class="col-md-6">
 				    <p>Ngày 27 /10/1995, Ngân hàng Kiên Long chính thức đi vào hoạt động.</p>
@@ -24,14 +24,14 @@
         </div>
         <section class="scroll-animate" style="width: 100% ;color: white;background-position: center center; background-size: cover; background-image: url('/images/home_bg_1.png');" id="tab_2">
             <div class="p-5">
-                <h1 class="justify-content-center d-flex">
-                    <span style="font-size: 30px;padding-bottom: 20px"><strong>ƯU ĐÃI CHO DOANH NGHIỆP</strong></span>
-			    </h1>
+                <h2 class="justify-content-center d-flex">
+                    <span style="padding-bottom: 20px"><strong>ƯU ĐÃI CHO DOANH NGHIỆP</strong></span>
+			    </h2>
                 <div class="row">
                     <div class="col-md-6 d-flex align-items-center justify-content-center">
                         <img alt=""
                              src="~/images/logo-kienlongbank-gui-tien-de-dang-rut-goc-online-nhe-nhang-1903x675.jpg"
-                             style="width: 100%">
+                             style="width: 100% ; height:100%">
                     </div>
 
                     <div class="col-md-6" >
@@ -42,8 +42,8 @@
                 </div>
             </div>
 		</section>
-        <div class="form-register my-5 row container-fluid d-flex justify-content-center align-items-center" style="background: #f5f5f5;" id="tab_3">
-            <div class="col-md-7 my-5 left-animate">
+        <div class="form-register my-5 container-fluid d-flex justify-content-center align-items-center" style="background: #f5f5f5;" id="tab_3">
+            <div class="my-5 left-animate">
                 <h2 class="text-center mb-4">
                     <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
                 </h2>
@@ -55,7 +55,7 @@
                         </div>
                     }
                     <!-- Thông tin cơ bản -->
-                    <h2><strong>Thông tin cơ bản</strong></h2>
+                    <h4><strong>Thông tin cơ bản</strong></h4>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-2">
                             <label asp-for="CompanyName" class="form-label"><strong>Tên doanh nghiệp</strong></label>
@@ -85,7 +85,7 @@
                     </div>
 
                     <!-- Người đại diện pháp luật -->
-                    <h2><strong>Người đại diện pháp luật</strong></h2>
+                    <h4><strong>Người đại diện pháp luật</strong></h4>
                     <div class="row mb-3">
                         <div class="col-md-4 mb-2">
                             <label asp-for="LegalRepName" class="form-label"><strong>Họ tên</strong></label>
@@ -105,7 +105,7 @@
                     </div>
 
                     <!-- Upload -->
-                    <h2><strong>Upload tài liệu</strong></h2>
+                    <h4><strong>Upload tài liệu</strong></h4>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-2">
                             <label asp-for="BusinessLicenseFile" class="form-label"><strong>Giấy phép đăng ký kinh doanh</strong></label>
@@ -119,7 +119,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3 justify-content-center d-flex">
                         <div class="g-recaptcha" data-sitekey="@ViewBag.RecaptchaSiteKey"></div>
                         <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
                     </div>
@@ -130,11 +130,6 @@
                 </form>
             </div>
             
-            <div class="col-md-5 d-flex justify-content-center align-items-center right-animate">
-                <img alt=""
-                src="~/images/kich-hoat-the-phong-cach-so-kienlongbank.jpg"
-                style="width: 100%">
-            </div>
         </div>
 
 
