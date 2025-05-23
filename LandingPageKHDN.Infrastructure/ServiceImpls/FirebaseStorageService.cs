@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LandingPageKHDN.Application.Common;
 
-namespace LandingPageKHDN.Infrastructure.Services
+namespace LandingPageKHDN.Infrastructure.ServiceImpls
 {
     public class FirebaseStorageService : IFirebaseStorageService
     {

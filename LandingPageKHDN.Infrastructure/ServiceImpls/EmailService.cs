@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 //using LandingPageKHDN.Infrastructure.Templates.Email;
 
-namespace LandingPageKHDN.Infrastructure.Services
+namespace LandingPageKHDN.Infrastructure.ServiceImpls
 {
     public class EmailService : IEmailService
     {

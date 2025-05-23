@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace LandingPageKHDN.Infrastructure.Services
+namespace LandingPageKHDN.Infrastructure.ServiceImpls
 {
     public class RecaptchaService : IRecaptchaService
     {

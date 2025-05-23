@@ -1,7 +1,7 @@
 ﻿using LandingPageKHDN.Application.Services;
 using LandingPageKHDN.Application.Interfaces;
 using LandingPageKHDN.Infrastructure.DbContextFolder;
-using LandingPageKHDN.Infrastructure.Services;
+using LandingPageKHDN.Infrastructure.ServiceImpls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

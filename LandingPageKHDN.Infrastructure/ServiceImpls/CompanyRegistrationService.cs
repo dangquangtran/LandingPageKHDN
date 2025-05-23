@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LandingPageKHDN.Application.ViewModels;
 
-namespace LandingPageKHDN.Infrastructure.Services
+namespace LandingPageKHDN.Infrastructure.ServiceImpls
 {
     public class CompanyRegistrationService : ICompanyRegistrationService
     {
