@@ -22,6 +22,7 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
         private readonly IEmailService _emailService;
         private readonly ICompanyValidationService _companyValidationService;
         private readonly ILogger<CompanyRegistrationService> _logger;
+        private readonly INsfwService _nsfwService1;
 
         public CompanyRegistrationService(
             IUnitOfWork unitOfWork,
@@ -29,7 +30,8 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             IRecaptchaService recaptchaService,
             IEmailService emailService,
             ILogger<CompanyRegistrationService> logger,
-            ICompanyValidationService companyValidationService)
+            ICompanyValidationService companyValidationService,
+            INsfwService nsfwService1)
         {
             _unitOfWork = unitOfWork;
             _firebaseStorageService = firebaseStorageService;
@@ -37,6 +39,7 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             _emailService = emailService;
             _logger = logger;
             _companyValidationService = companyValidationService;
+            _nsfwService1 = nsfwService1;
         }
 
         //public async Task<ResponseModel<string>> RegisterCompanyAsync(
@@ -147,6 +150,30 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                 _logger.LogInformation("Tệp hợp lệ, tiến hành upload");
 
                 // 3. Upload lên Firebase
+                using var licenseMem = new MemoryStream();
+                using var idMem = new MemoryStream();
+                await viewModel.BusinessLicenseFile.CopyToAsync(licenseMem);
+                await viewModel.LegalRepIDFile.CopyToAsync(idMem);
+                licenseMem.Position = 0;
+                idMem.Position = 0;
+
+                if (!await _nsfwService1.IsSafeImageAsync(idMem))
+                {
+                    _logger.LogWarning("Ảnh CMND/CCCD chứa nội dung không phù hợp.");
+                    return ResponseModel<object>.FailureResult("Ảnh CMND/CCCD chứa nội dung không phù hợp (18+).");
+                }
+                idMem.Position = 0;
+
+                if (!await _nsfwService1.IsSafeImageAsync(licenseMem))
+                {
+                    _logger.LogWarning("Ảnh giấy phép kinh doanh chứa nội dung không phù hợp.");
+                    return ResponseModel<object>.FailureResult("Ảnh giấy phép kinh doanh chứa nội dung không phù hợp (18+).");
+                }
+                licenseMem.Position = 0;
+
+                _logger.LogInformation("Ảnh hợp lệ, tiến hành upload lên Firebase");
+
+
                 string licenseFileName = Guid.NewGuid() + Path.GetExtension(viewModel.BusinessLicenseFile!.FileName);
                 string idFileName = Guid.NewGuid() + Path.GetExtension(viewModel.LegalRepIDFile!.FileName);
 

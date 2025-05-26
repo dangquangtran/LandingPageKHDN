@@ -264,10 +264,20 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                     if (!_companyValidationService.IsValidFile(viewModel.BusinessLicenseFile, allowedExts, maxFileSize))
                         return ResponseModel<object>.FailureResult("File giấy phép kinh doanh không hợp lệ.");
 
+                    using var licenseMem = new MemoryStream();
+                    await viewModel.BusinessLicenseFile.CopyToAsync(licenseMem);
+                    licenseMem.Position = 0;
+
+                    if (!await _nsfwService1.IsSafeImageAsync(licenseMem))
+                    {
+                        _logger.LogWarning("Ảnh giấy phép kinh doanh chứa nội dung không phù hợp.");
+                        return ResponseModel<object>.FailureResult("Ảnh giấy phép kinh doanh chứa nội dung không phù hợp (18+).");
+                    }
+                    licenseMem.Position = 0;
+
                     var licenseFileName = Guid.NewGuid() + Path.GetExtension(viewModel.BusinessLicenseFile.FileName);
-                    using var licenseStream = viewModel.BusinessLicenseFile.OpenReadStream();
                     var upload = await _firebaseStorageService.UploadFileAsync(
-                        licenseStream, licenseFileName, viewModel.BusinessLicenseFile.ContentType);
+                        licenseMem, licenseFileName, viewModel.BusinessLicenseFile.ContentType);
 
                     if (upload.Status != 200)
                         return ResponseModel<object>.FailureResult("Tải lên giấy phép kinh doanh thất bại.");
@@ -280,10 +290,20 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                     if (!_companyValidationService.IsValidFile(viewModel.LegalRepIDFile, allowedExts, maxFileSize))
                         return ResponseModel<object>.FailureResult("File CMND/CCCD không hợp lệ.");
 
+                    using var idMem = new MemoryStream();
+                    await viewModel.LegalRepIDFile.CopyToAsync(idMem);
+                    idMem.Position = 0;
+
+                    if (!await _nsfwService1.IsSafeImageAsync(idMem))
+                    {
+                        _logger.LogWarning("Ảnh CMND/CCCD chứa nội dung không phù hợp.");
+                        return ResponseModel<object>.FailureResult("Ảnh CMND/CCCD chứa nội dung không phù hợp (18+).");
+                    }
+                    idMem.Position = 0;
+
                     var idFileName = Guid.NewGuid() + Path.GetExtension(viewModel.LegalRepIDFile.FileName);
-                    using var idStream = viewModel.LegalRepIDFile.OpenReadStream();
                     var upload = await _firebaseStorageService.UploadFileAsync(
-                        idStream, idFileName, viewModel.LegalRepIDFile.ContentType);
+                        idMem, idFileName, viewModel.LegalRepIDFile.ContentType);
 
                     if (upload.Status != 200)
                         return ResponseModel<object>.FailureResult("Tải lên CMND/CCCD thất bại.");
