@@ -84,3 +84,31 @@ form textarea:focus {
 h4 {
     color: #1d2452;
 }
+
+@media (max-width: 767.98px) {
+    /* Giảm font-size tổng thể cho form */
+    .form-register {
+        font-size: 15px;
+    }
+    /* Giảm font-size cho label */
+    .form-register label,
+    .form-register .form-label {
+        font-size: 15px;
+    }
+    /* Tăng font-size cho h4 để nổi bật hơn label */
+    .form-register h4 {
+        font-size: 18px;
+        margin-bottom: 12px;
+        margin-top: 18px;
+    }
+    /* Giảm font-size cho input */
+    .form-register input,
+    .form-register select,
+    .form-register textarea {
+        font-size: 15px;
+    }
+    /* Giảm font-size cho button nếu cần */
+    .form-register button {
+        font-size: 15px;
+    }
+}
