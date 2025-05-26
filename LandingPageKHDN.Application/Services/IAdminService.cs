@@ -10,7 +10,7 @@ namespace LandingPageKHDN.Application.Services
 {
     public interface IAdminService
     {
-        Task<ResponseModel<object>> GetAllCompanyAsync(int pageIndex, int pageSize);
+        Task<ResponseModel<List<CompanyRegistrationGetViewModel>>> GetAllCompanyAsync(int pageIndex, int pageSize);
         Task<ResponseModel<object>> CreateCompanyAsync(CompanyRegistrationCreateViewModel viewModel);
         Task<ResponseModel<object>> UpdateCompanyAsync(CompanyRegistrationUpdateViewModel viewModel);
         Task<ResponseModel<object>> RemoveCompanyAsync(int id);
