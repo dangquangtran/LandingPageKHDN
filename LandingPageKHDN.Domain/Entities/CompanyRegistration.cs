@@ -28,4 +28,6 @@ public partial class CompanyRegistration
     public string? LegalRepIdfilePath { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public bool? Status { get; set; }
 }
