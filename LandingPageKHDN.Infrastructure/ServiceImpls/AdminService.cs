@@ -33,14 +33,13 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             _companyValidationService = companyValidationService;
         }
 
-        public async Task<ResponseModel<object>> GetAllCompanyAsync(int pageIndex, int pageSize)
+        public async Task<ResponseModel<List<CompanyRegistrationGetViewModel>>> GetAllCompanyAsync(int pageIndex, int pageSize)
         {
             _logger.LogInformation("Bắt đầu lấy danh sách công ty");
             try
             {
                 var (pagedData, totalCount) = await _unitOfWork.CompanyRegistrations.GetPagedAsync(pageIndex, pageSize);
 
-               // var allDataOfCompany = await _unitOfWork.CompanyRegistrations.GetAllAsync();
                 var result = pagedData.Select(c => new CompanyRegistrationGetViewModel
                 {
                     Id = c.Id,
@@ -58,39 +57,22 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                     Status = c.Status
                 }).ToList();
 
-                //if (result.Count == 0)
-                //{
-                //    _logger.LogInformation("Không có dữ liệu công ty nào được tìm thấy.");
-                //    return ResponseModel<object>.SuccessResult(result, "Không có dữ liệu");
-                //}
-                //var message = $"Tổng dữ liệu: {result.Count}";
-                //_logger.LogInformation("Lấy danh sách công ty thành công với {Count} bản ghi.", result.Count);
-
-                //return ResponseModel<object>.SuccessResult(result, message);
-                var response = new
-                {
-                    Items = result,
-                    TotalCount = totalCount,
-                    PageIndex = pageIndex,
-                    PageSize = pageSize,
-                    TotalPages = (int)Math.Ceiling((double)totalCount / pageSize)
-                };
-
                 string message = result.Count == 0
                     ? "Không có dữ liệu"
                     : $"Tổng dữ liệu: {totalCount}, Trang hiện tại: {result.Count} bản ghi";
 
                 _logger.LogInformation("Lấy danh sách công ty thành công: {Message}", message);
 
-                return ResponseModel<object>.SuccessResult(response, message);
+                return ResponseModel<List<CompanyRegistrationGetViewModel>>.SuccessResult(result, message);
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(ex, "Lỗi khi lấy thông tin danh sách công ty");
-                return ResponseModel<object>.FailureResult($"Lỗi: {ex.Message}");
+                return ResponseModel<List<CompanyRegistrationGetViewModel>>.FailureResult($"Lỗi: {ex.Message}");
             }
         }
+
 
         public async Task<ResponseModel<object>> CreateCompanyAsync(CompanyRegistrationCreateViewModel viewModel)
         {
@@ -272,6 +254,7 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                 company.LegalRepPosition = viewModel.LegalRepPosition;
                 company.BusinessLicenseFilePath = licenseUrl;
                 company.LegalRepIdfilePath = idUrl;
+                company.Status = viewModel.Status;
 
                 _unitOfWork.CompanyRegistrations.Update(company);
 

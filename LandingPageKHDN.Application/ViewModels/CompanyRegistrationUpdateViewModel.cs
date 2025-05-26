@@ -20,5 +20,6 @@ namespace LandingPageKHDN.Application.ViewModels
         public string LegalRepPosition { get; set; } = null!;
         public IFormFile? BusinessLicenseFile { get; set; }
         public IFormFile? LegalRepIDFile { get; set; }
+        public bool? Status { get; set; }
     }
 }
