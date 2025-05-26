@@ -27,6 +27,22 @@ namespace LandingPageKHDN.Infrastructure.Repositories
 
         public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate) =>
             await _dbSet.Where(predicate).ToListAsync();
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<(IEnumerable<TEntity> Data, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
+        {
+            var totalCount = await _dbSet.CountAsync();
+            var data = await _dbSet
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (data, totalCount);
+        }
+
 
         public async Task AddAsync(TEntity entity) => await _dbSet.AddAsync(entity);
 
