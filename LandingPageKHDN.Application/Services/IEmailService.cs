@@ -10,5 +10,6 @@ namespace LandingPageKHDN.Application.Services
     public interface IEmailService
     {
         Task<ResponseModel<bool>> SendEmailAsync(string to, string companyName);
+        Task<ResponseModel<bool>> SendUpdateConfirmationEmailAsync(string to, string companyName);
     }
 }
