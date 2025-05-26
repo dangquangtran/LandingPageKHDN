@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using LandingPageKHDN.Application.Interfaces.Repositories;
 using LandingPageKHDN.Infrastructure.Repositories;
+using LandingPageKHDN.Application.ViewModels;
 
 namespace LandingPageKHDN.Infrastructure
 {
@@ -25,6 +26,10 @@ namespace LandingPageKHDN.Infrastructure
             services.AddScoped<ICompanyValidationService, CompanyValidationService>();
             services.AddScoped<ICompanyRegistrationService, CompanyRegistrationService>();
             services.AddScoped<IAdminService, AdminService>();
+            //  services.AddHttpClient<INSFWDetectionService, NSFWDetectionService>();
+            services.AddScoped<INSFWDetectionService, NSFWDetectionService>();
+            services.Configure<HuggingFaceOptions>(configuration.GetSection("HuggingFace"));
+            services.AddHttpClient<INsfwService, NsfwService>();
             services.AddHttpClient();
 
             return services;
