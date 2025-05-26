@@ -20,6 +20,7 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly IRecaptchaService _recaptchaService;
         private readonly IEmailService _emailService;
+        private readonly ICompanyValidationService _companyValidationService;
         private readonly ILogger<CompanyRegistrationService> _logger;
 
         public CompanyRegistrationService(
@@ -27,13 +28,15 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             IFirebaseStorageService firebaseStorageService,
             IRecaptchaService recaptchaService,
             IEmailService emailService,
-            ILogger<CompanyRegistrationService> logger)
+            ILogger<CompanyRegistrationService> logger,
+            ICompanyValidationService companyValidationService)
         {
             _unitOfWork = unitOfWork;
             _firebaseStorageService = firebaseStorageService;
             _recaptchaService = recaptchaService;
             _emailService = emailService;
             _logger = logger;
+            _companyValidationService = companyValidationService;
         }
 
         //public async Task<ResponseModel<string>> RegisterCompanyAsync(
@@ -135,7 +138,8 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
 
                 // 2. Kiểm tra file hợp lệ
                 string[] allowedExts = [".pdf", ".jpg", ".jpeg", ".png"];
-                if (!IsValidFile(viewModel.BusinessLicenseFile, allowedExts) || !IsValidFile(viewModel.LegalRepIDFile, allowedExts))
+                if (!_companyValidationService.IsValidFile(viewModel.BusinessLicenseFile,allowedExts, 5 * 1024 * 1024) || !_companyValidationService.IsValidFile(viewModel.LegalRepIDFile, allowedExts, 5 * 1024 * 1024))
+             //   if (!IsValidFile(viewModel.BusinessLicenseFile, allowedExts) || !IsValidFile(viewModel.LegalRepIDFile, allowedExts))
                 {
                     _logger.LogWarning("Tệp không hợp lệ cho công ty: {CompanyName}", viewModel.CompanyName);
                     return ResponseModel<object>.FailureResult("Tệp không hợp lệ.");
@@ -185,10 +189,11 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                     LegalRepPosition = viewModel.LegalRepPosition,
                     BusinessLicenseFilePath = licenseUrl,
                     LegalRepIdfilePath = idUrl,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now,
+                    Status = false,
                 };
 
-                var duplicateFieldErrors = await GetDuplicateFieldErrorsAsync(entity);
+                var duplicateFieldErrors = await _companyValidationService.GetDuplicateFieldErrorsAsync(entity);
                 if (duplicateFieldErrors.Any())
                 {
                     var message = "Thông tin đã tồn tại trong hệ thống";
@@ -212,8 +217,18 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                 _logger.LogInformation("Ghi log hành động vào DB");
 
                 // 6. Gửi email
-                await _emailService.SendEmailAsync(entity.Email, entity.CompanyName);
-                _logger.LogInformation("Đã gửi email xác nhận đến: {Email}", entity.Email);
+                //await _emailService.SendEmailAsync(entity.Email, entity.CompanyName);
+                //_logger.LogInformation("Đã gửi email xác nhận đến: {Email}", entity.Email);
+                var emailSent = await _emailService.SendEmailAsync(entity.Email, entity.CompanyName);
+                if (emailSent.Status == 200)
+                {
+                    entity.Status = true;
+                    _logger.LogInformation("Đã gửi email xác nhận đến: {Email}", entity.Email);
+                }
+                else
+                {
+                    _logger.LogWarning("Không gửi được email xác nhận đến: {Email} - Lỗi: {Error}", entity.Email, emailSent.Message);
+                }
                 return ResponseModel<object>.SuccessResult(entity, "Đăng ký thành công");
             }
             catch (Exception ex)
@@ -224,42 +239,42 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
             }
         }
 
-        private bool IsValidFile(IFormFile file, string[] allowedExts)
-        {
-            if (file == null) return false;
-            var ext = Path.GetExtension(file.FileName).ToLower();
-            return allowedExts.Contains(ext);
-        }
+        //private bool IsValidFile(IFormFile file, string[] allowedExts)
+        //{
+        //    if (file == null) return false;
+        //    var ext = Path.GetExtension(file.FileName).ToLower();
+        //    return allowedExts.Contains(ext);
+        //}
 
-        private async Task<Dictionary<string, string[]>> GetDuplicateFieldErrorsAsync(CompanyRegistration entity)
-{
-            var existingRecords = await _unitOfWork.CompanyRegistrations
-                .FindAsync(x =>
-                x.CompanyName == entity.CompanyName ||
-                x.TaxCode == entity.TaxCode ||
-                x.PhoneNumber == entity.PhoneNumber ||
-                x.Email == entity.Email ||
-                x.LegalRepId == entity.LegalRepId);
+//        private async Task<Dictionary<string, string[]>> GetDuplicateFieldErrorsAsync(CompanyRegistration entity)
+//{
+//            var existingRecords = await _unitOfWork.CompanyRegistrations
+//                .FindAsync(x =>
+//                x.CompanyName == entity.CompanyName ||
+//                x.TaxCode == entity.TaxCode ||
+//                x.PhoneNumber == entity.PhoneNumber ||
+//                x.Email == entity.Email ||
+//                x.LegalRepId == entity.LegalRepId);
 
-            var errors = new Dictionary<string, string[]>();
+//            var errors = new Dictionary<string, string[]>();
 
-            if (existingRecords.Any(x => x.CompanyName == entity.CompanyName))
-                errors["CompanyName"] = new[] { "Tên doanh nghiệp đã tồn tại." };
+//            if (existingRecords.Any(x => x.CompanyName == entity.CompanyName))
+//                errors["CompanyName"] = new[] { "Tên doanh nghiệp đã tồn tại." };
 
-            if (existingRecords.Any(x => x.TaxCode == entity.TaxCode))
-                errors["TaxCode"] = new[] { "Mã số thuế đã tồn tại." };
+//            if (existingRecords.Any(x => x.TaxCode == entity.TaxCode))
+//                errors["TaxCode"] = new[] { "Mã số thuế đã tồn tại." };
 
-            if (existingRecords.Any(x => x.PhoneNumber == entity.PhoneNumber))
-                errors["PhoneNumber"] = new[] { "Số điện thoại đã tồn tại." };
+//            if (existingRecords.Any(x => x.PhoneNumber == entity.PhoneNumber))
+//                errors["PhoneNumber"] = new[] { "Số điện thoại đã tồn tại." };
 
-            if (existingRecords.Any(x => x.Email == entity.Email))
-                errors["Email"] = new[] { "Email đã tồn tại." };
+//            if (existingRecords.Any(x => x.Email == entity.Email))
+//                errors["Email"] = new[] { "Email đã tồn tại." };
 
-            if (existingRecords.Any(x => x.LegalRepId == entity.LegalRepId))
-                errors["LegalRepId"] = new[] { "CMND/CCCD đã tồn tại." };
+//            if (existingRecords.Any(x => x.LegalRepId == entity.LegalRepId))
+//                errors["LegalRepId"] = new[] { "CMND/CCCD đã tồn tại." };
 
-            return errors;
-            }
+//            return errors;
+//            }
 
 
     }

@@ -22,7 +22,9 @@ namespace LandingPageKHDN.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRecaptchaService, RecaptchaService>();
             services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+            services.AddScoped<ICompanyValidationService, CompanyValidationService>();
             services.AddScoped<ICompanyRegistrationService, CompanyRegistrationService>();
+            services.AddScoped<IAdminService, AdminService>();
             services.AddHttpClient();
 
             return services;
