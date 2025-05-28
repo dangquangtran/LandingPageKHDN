@@ -5,11 +5,13 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LandingPageKHDN", "LandingPageKHDN\LandingPageKHDN.csproj", "{16042AA2-1D19-46E8-85BA-D5FDB1346CB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandingPageKHDN.Application", "LandingPageKHDN.Application\LandingPageKHDN.Application.csproj", "{3F5FBFD4-1323-4471-B3C0-BA271480E246}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LandingPageKHDN.Application", "LandingPageKHDN.Application\LandingPageKHDN.Application.csproj", "{3F5FBFD4-1323-4471-B3C0-BA271480E246}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandingPageKHDN.Domain", "LandingPageKHDN.Domain\LandingPageKHDN.Domain.csproj", "{7D1A421C-704B-473C-B050-91C50E603FC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LandingPageKHDN.Domain", "LandingPageKHDN.Domain\LandingPageKHDN.Domain.csproj", "{7D1A421C-704B-473C-B050-91C50E603FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandingPageKHDN.Infrastructure", "LandingPageKHDN.Infrastructure\LandingPageKHDN.Infrastructure.csproj", "{F4C1C5A1-D326-4ED7-909D-14D593FB3EA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LandingPageKHDN.Infrastructure", "LandingPageKHDN.Infrastructure\LandingPageKHDN.Infrastructure.csproj", "{F4C1C5A1-D326-4ED7-909D-14D593FB3EA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandingPageKHDN.Tests", "LandingPageKHDN.Tests\LandingPageKHDN.Tests.csproj", "{BC96893C-3F68-489F-8C4E-8A838F7F5188}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F4C1C5A1-D326-4ED7-909D-14D593FB3EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4C1C5A1-D326-4ED7-909D-14D593FB3EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4C1C5A1-D326-4ED7-909D-14D593FB3EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC96893C-3F68-489F-8C4E-8A838F7F5188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC96893C-3F68-489F-8C4E-8A838F7F5188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC96893C-3F68-489F-8C4E-8A838F7F5188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC96893C-3F68-489F-8C4E-8A838F7F5188}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

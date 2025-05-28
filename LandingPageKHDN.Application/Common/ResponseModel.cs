@@ -17,6 +17,9 @@ namespace LandingPageKHDN.Application.Common
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, string[]>? Errors { get; set; }
+
+        [JsonIgnore]
+        public bool IsSuccess => Status >= 200 && Status < 300;
         public static ResponseModel<T> SuccessResult(T data, string message, int status =200)
         {
             return new ResponseModel<T> { Status = status, Message = message, Data = data };
