@@ -1,0 +1,52 @@
+﻿.admin-index-container {
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+.admin-index-title {
+    text-align: center;
+    color: #ef4e24;
+    margin-bottom: 32px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.table-admin {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+    .table-admin th {
+        background: #ef4e24;
+        color: #fff;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .table-admin td {
+        vertical-align: middle;
+        text-align: center;
+        font-size: 15px;
+    }
+
+.btnRegister {
+    min-width: 80px;
+    margin-bottom: 4px;
+}
+
+@media (max-width: 991.98px) {
+    .admin-index-container {
+        padding: 16px 4px;
+    }
+
+    .table-admin th, .table-admin td {
+        font-size: 13px;
+        padding: 6px;
+    }
+}
