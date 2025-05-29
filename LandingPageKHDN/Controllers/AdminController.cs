@@ -18,8 +18,31 @@ namespace LandingPageKHDN.Controllers
             _adminService = adminService;
             _logger = logger;
         }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(AdminLoginViewModel model)
+        {
+            if (model.Username == "admin" && model.Password == "12345")
+            {
+                // Đăng nhập thành công, lưu session
+                HttpContext.Session.SetString("IsAdmin", "true");
+                return RedirectToAction("Index");
+            }
+            ViewBag.Error = "Sai tài khoản hoặc mật khẩu";
+            return View(model);
+        }
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+            {
+                return RedirectToAction("Login");
+            }
             var response = await _adminService.GetAllCompanyAsync(1, 100);
             var items = response.Data ?? new List<CompanyRegistrationGetViewModel>();
             return View(items);
@@ -28,6 +51,10 @@ namespace LandingPageKHDN.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+            {
+                return RedirectToAction("Login");
+            }
             // Lấy danh sách công ty (hoặc tốt nhất là tạo hàm GetCompanyByIdAsync trong service)
             var response = await _adminService.GetAllCompanyAsync(1, 1000); // hoặc số lớn hơn tổng số công ty
             var company = response.Data?.FirstOrDefault(x => x.Id == id);
@@ -51,6 +78,10 @@ namespace LandingPageKHDN.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+            {
+                return RedirectToAction("Login");
+            }
             return View();
         }
 
@@ -94,6 +125,10 @@ namespace LandingPageKHDN.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+            {
+                return RedirectToAction("Login");
+            }
             var response = await _adminService.GetAllCompanyAsync(1, 1000);
             var company = response.Data?.FirstOrDefault(x => x.Id == id);
             if (company == null)
@@ -154,6 +189,10 @@ namespace LandingPageKHDN.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+            {
+                return RedirectToAction("Login");
+            }
             var response = await _adminService.GetAllCompanyAsync(1, 1000);
             var company = response.Data?.FirstOrDefault(x => x.Id == id);
             if (company == null)

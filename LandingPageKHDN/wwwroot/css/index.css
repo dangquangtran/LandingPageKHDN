@@ -5,8 +5,6 @@
     background: #fff;
 }
 
-
-
 .overview {
     opacity: 0;
     transform: translateY(60px) scale(0.98);

@@ -35,7 +35,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
 });
-
+builder.Services.AddSession();
 
 // G?i extension method ?? ??ng k?DI
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -56,7 +56,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(

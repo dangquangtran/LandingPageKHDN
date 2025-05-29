@@ -1,0 +1,28 @@
+﻿.admin-login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.admin-login-form {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    min-width: 320px;
+    max-width: 360px;
+    width: 100%;
+}
+
+    .admin-login-form h2 {
+        text-align: center;
+        margin-bottom: 24px;
+        color: #ef4e24;
+    }
+
+    .admin-login-form .btnRegister {
+        width: 100%;
+        margin-top: 12px;
+    }

@@ -1,0 +1,25 @@
+﻿@model LandingPageKHDN.Application.ViewModels.AdminLoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập Admin";
+}
+
+<link rel="stylesheet" href="~/css/login.css" />
+
+<div class="admin-login-container">
+    <form method="post" class="admin-login-form">
+        <h2>Đăng nhập</h2>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center">@ViewBag.Error</div>
+        }
+        <div class="mb-3">
+            <label for="Username" class="form-label">Tài khoản</label>
+            <input type="text" class="form-control" id="Username" name="Username" required autofocus />
+        </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Mật khẩu</label>
+            <input type="password" class="form-control" id="Password" name="Password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btnRegister">Đăng nhập</button>
+    </form>
+</div>
