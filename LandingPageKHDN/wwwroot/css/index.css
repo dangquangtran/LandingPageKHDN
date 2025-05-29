@@ -1,15 +1,4 @@
-﻿.btnRegister {
-    background: linear-gradient(to right, #f37721 0%, #ef4e24 100%);
-    color: #fff;
-}
-
-.btnRegister:hover {
-    background: #fff;
-    color: #ef4e24;
-    border: 1px solid #ef4e24;
-}
-
-form {
+﻿form {
     border: 2px solid #ef4e24;
     border-radius: 8px;
     padding: 32px 24px;

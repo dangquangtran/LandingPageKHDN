@@ -111,7 +111,6 @@ namespace LandingPageKHDN.Controllers
                 LegalRepName = company.LegalRepName,
                 LegalRepId = company.LegalRepId,
                 LegalRepPosition = company.LegalRepPosition,
-                Status = company.Status
                 // File không map ở đây
             };
             return View(updateModel);

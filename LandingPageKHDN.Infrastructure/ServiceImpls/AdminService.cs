@@ -305,7 +305,6 @@ namespace LandingPageKHDN.Infrastructure.ServiceImpls
                 company.LegalRepPosition = viewModel.LegalRepPosition;
                 company.BusinessLicenseFilePath = licenseUrl;
                 company.LegalRepIdfilePath = idUrl;
-                company.Status = viewModel.Status;
 
                 _unitOfWork.CompanyRegistrations.Update(company);
 
