@@ -48,12 +48,24 @@
                     <strong>MỞ TÀI KHOẢN DOANH NGHIỆP</strong>
                 </h2>
                 <form asp-controller="CompanyRegistration" asp-action="Submit" method="post" enctype="multipart/form-data">
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                    {
+                        <div class="alert alert-danger text-center" role="alert">
+                            @foreach (var error in ViewData.ModelState[string.Empty].Errors)
+                            {
+                                @error.ErrorMessage <br />
+                            }
+                        </div>
+                    }
+
+                    @* Thông báo thành công *@
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success text-center" role="alert">
                             @TempData["SuccessMessage"]
                         </div>
                     }
+
                     <!-- Thông tin cơ bản -->
                     <h4><strong>Thông tin cơ bản</strong></h4>
                     <div class="row mb-3">

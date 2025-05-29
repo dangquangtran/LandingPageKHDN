@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -34,4 +34,16 @@ body {
         background: #fff;
         color: #ef4e24;
         border: 1px solid #ef4e24;
+    }
+
+    form input[type="text"]:focus,
+    form input[type="email"]:focus,
+    form input[type="tel"]:focus,
+    form input[type="file"]:focus,
+    form input[type="password"]:focus,
+    form textarea:focus,
+    .btnRegister:focus {
+        border-color: #ef4e24 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(239, 78, 36, 0.15) !important;
     }

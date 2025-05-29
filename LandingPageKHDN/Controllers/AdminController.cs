@@ -126,7 +126,20 @@ namespace LandingPageKHDN.Controllers
             if (result.Status == 200)
                 return RedirectToAction(nameof(Index));
 
-            ModelState.AddModelError(string.Empty, result.Message);
+            if (result.Errors != null)
+            {
+                foreach (var error in result.Errors)
+                {
+                    foreach (var msg in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, msg);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+            }
             return View(viewModel);
         }
 
