@@ -203,8 +203,7 @@ namespace LandingPageKHDN.Tests.ServiceTests
                 PhoneNumber = "0987654321",
                 LegalRepName = "New Rep",
                 LegalRepId = "ID999",
-                LegalRepPosition = "CEO",
-                Status = false
+                LegalRepPosition = "CEO"
             };
 
             _mockUnitOfWork.Setup(u => u.CompanyRegistrations.FirstOrDefaultAsync(It.IsAny<Expression<Func<CompanyRegistration, bool>>>()))
