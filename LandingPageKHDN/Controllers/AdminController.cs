@@ -37,16 +37,29 @@ namespace LandingPageKHDN.Controllers
             ViewBag.Error = "Sai tài khoản hoặc mật khẩu";
             return View(model);
         }
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string? search)
         {
             if (HttpContext.Session.GetString("IsAdmin") != "true")
             {
                 return RedirectToAction("Login");
             }
-            var response = await _adminService.GetAllCompanyAsync(1, 100);
+            var response = await _adminService.GetAllCompanyAsync(1, 1000);
             var items = response.Data ?? new List<CompanyRegistrationGetViewModel>();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim().ToLower();
+                items = items
+                    .Where(x => (!string.IsNullOrEmpty(x.CompanyName) && x.CompanyName.ToLower().Contains(search))
+                             || (!string.IsNullOrEmpty(x.TaxCode) && x.TaxCode.ToLower().Contains(search)))
+                    .ToList();
+                ViewBag.Search = search;
+            }
+
             return View(items);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
